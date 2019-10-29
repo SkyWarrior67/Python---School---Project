@@ -1,0 +1,223 @@
+import pygame
+import time
+
+# start opp pygame
+pygame.init()
+
+# definer bredden og høyden på spillvinduet som variabler
+display_width = 1200
+display_height = 700
+
+# lag forkortede navn på de forskjellige fargene som skal brukes
+black = (0, 0, 0)
+white = (255, 255, 255)
+red   = (255, 0, 0)
+purple = (255, 0, 255)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+yellow = (255, 255, 0)
+
+
+# last inn spriten til spilleren 
+johnny = pygame.image.load('Character.png')
+# endre størrelsen (hvis det trengs)
+johnny = pygame.transform.scale(johnny, (96, 112))
+
+background_image = pygame.image.load('Background.png')
+note_image = pygame.image.load('Note.png')
+start_menu = pygame.image.load('Start_Menu.png')
+#finish_image = pygame.image.load('Finish.png')
+background_position = [0, 0]
+
+distance = 30
+blank_distance = 125
+def load_background():
+    game_display.blit(background_image, background_position)
+def load_note():
+    game_display.blit(note_image, background_position)
+def load_startmenu():
+    game_display.blit(start_menu, background_position)
+#def load_finish():
+    #game_display.blit(finish_image, background_position)
+
+# game_display representerer en såkalt "surface", denne definerer hva som skal vises som innhold i spillvinduet 
+game_display = pygame.display.set_mode((display_width,display_height))
+
+# her addresserer vi selve vinduet og setter tittelen
+pygame.display.set_caption('Xcape')
+
+# clock brukes for å styre frameraten på spillet, bedre enn sleep, fordi det tar høyde for at spillet kan bruke litt tid på å tegne ting
+clock = pygame.time.Clock()
+
+#farg bakgrunnen 
+#game_display.fill(black)
+load_startmenu()
+
+# update er det som faktisk tegner alt du har beskrevet siden siste update
+pygame.display.update()
+
+# font-objektene definerer hvordan tekst skal vises på skjermen
+# her har jeg laget to stykk, slik at man kan tegne både tittel og annen tekst
+large_font = pygame.font.Font('freesansbold.ttf', 115)
+normal_font = pygame.font.Font('freesansbold.ttf', 16)
+
+# done representerer om spillet er ferdig/avbrutt
+start = False
+done = True
+
+#Image wont fckings load!!!!!!
+load_startmenu()
+
+while not start:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_u:
+                load_startmenu()
+            if event.key == pygame.K_SPACE:
+                start = True
+
+if start == True:
+    done = False
+
+pygame.display.update()
+
+# her har jeg lagret all dialogen i introen i en liste med tekst, dette er litt mer fleksibelt, siden hvis man legger til eller fjerner noe så funker det fortsatt
+intro_text = ['Hello there.',
+              'You are about to embark on a treacherous journey.',
+              'In this world you will assume the role of a detective from a big city.',
+              'You have heard rumours that an abandoned factory fairly far away from the closest settlement has illegally been opened again.',
+              'This factory had previously been closed due to numerous suspicions that it was experimenting on innocent humans.',
+              'However, no one could provide any solid evidence that this was the case.',
+              'Whatever the truth may reveal, you will secretly go to this factory to investigate it.',
+              'As soon as you get there, the factory seems to be fairly empty.',
+              'You take a chance by going inside the factory, through what appears to be an open door.',
+              'Suddenly, the door closes behind you. You are now trapped inside the factory.']
+
+# her går vi gjennom hver tekst og viser den på skjermen, før selve spillet starter
+for sentence in intro_text:
+    # bakgrunnen må fortsatt farges, siden alt resettes mellom hver update
+    game_display.fill(black)
+
+    # render brukes for å finne ut hvordan teksten ser ut som piksler hvis den tegnes
+    text_surf = normal_font.render(sentence, True, white)
+    # text_rect definerer hvor på skjermen teksten vil havne
+    text_rect = text_surf.get_rect()
+
+    # her flytter vi teksten til midten av skjermen
+    text_rect.center = ((display_width // 2), (display_height // 2))
+
+    # fortell vinduet hvordan teksten ser ut, og hvor den skal være
+    game_display.blit(text_surf, text_rect)
+
+    pygame.display.update()
+
+    time.sleep(6)
+
+intro_text2 = ['Good Luck']
+
+for sentence in intro_text2:
+
+    game_display.fill(black)
+
+    text_surf = large_font.render(sentence, True, red)
+
+    text_rect = text_surf.get_rect()
+
+    text_rect.center = ((display_width // 2), (display_height // 2))
+
+    game_display.blit(text_surf, text_rect)
+
+    # vi må oppdatere, hvis ikke kommer det aldri på skjermen
+    pygame.display.update()
+    
+    # her kan vi bruke time sleep, fordi å tegne teksten tar tilnærmet 0 sekunder
+    time.sleep(2)
+
+see_Note = False
+
+# x og y representerer posisjonen til spilleren på skjermen
+x, y = 25, 305
+
+# igjen må vi fylle bakgrunnen
+# game_display.fill(black)
+# tegn noe mer 
+load_background()
+
+# her er det som kalles "game loop", som kjører om og om igjen til spillet er slutt
+while not done:
+    #if left == True:
+        #x -= distance
+    #if right == True:
+        #x += distance
+    #if up == True:
+        #y -= distance
+    #if down == True:
+        #y += distance
+    # event representerer det som pygame fanger opp av tastetrykk og liknende
+    for event in pygame.event.get():
+        # hvis det er en tast som trykkes ned
+        if event.type == pygame.KEYDOWN:
+            # hvis den tasten som tryktes ned er escape
+            if event.key == pygame.K_ESCAPE:
+                done = True
+
+            # hvis det er en av piltastene, endre spillerens posisjon
+            if event.key == pygame.K_a:
+                x -= distance
+                load_background()
+            if event.key == pygame.K_d:
+                x += distance
+                load_background()
+            if event.key == pygame.K_w:
+                y -= distance
+                load_background()
+            if event.key == pygame.K_s:
+                y += distance
+                load_background()
+            if event.key == pygame.K_LEFT:
+                x -= distance
+                load_background()
+            if event.key == pygame.K_RIGHT:
+                x += distance
+                load_background()
+            if event.key == pygame.K_UP:
+                y -= distance
+                load_background()
+            if event.key == pygame.K_DOWN:
+                y += distance
+                load_background()
+
+            #Hva som skjer når spilleren står på (x) og (y)
+            if event.key == pygame.K_e:
+                if x == 1075 or x == 1045 and y == 575 or y == 545:
+                    if not see_Note:
+                        load_note()
+            if event.key == pygame.K_r:
+                see_Note = False
+                load_background()
+                             
+    # tegn johnny
+    game_display.blit(johnny, (x, y))
+
+    if x > display_width - blank_distance:
+        x = display_width - blank_distance
+        load_background()
+    if x < 10:
+        x = 10
+        load_background()
+    if y > display_height - blank_distance:
+        y = display_height - blank_distance
+        load_background()
+    if y < 15:
+        y = 15
+        load_background()
+                    
+    # update, så det vises på skjermen
+    pygame.display.update()
+
+    # likner på sleep, men her forteller vi bare at clock skal opprettholde en framerate på antall frames per sekund
+    # clock.tick(30)
+
+# sørg for at pygame lukker seg riktig
+pygame.quit()
+
